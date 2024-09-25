@@ -1,5 +1,4 @@
 const EmployeeDao = require("../repository/EmployeeDAO");
-const uuid = require("uuid");
 
 /*
     Employee Object Model

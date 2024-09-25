@@ -11,9 +11,9 @@ const TableName = "employees";
 /*
     Employee Object Model
         {
-            username: string (unique)
-            password: string
-            manager: boolean (true = manager, false = reg employee)
+            username: string (unique, required)
+            password: string (required)
+            manager: boolean (true = manager, (default) false = reg employee)
         }
 */
 
@@ -69,9 +69,7 @@ async function loginEmployee(username, password) {
 // Check if username is taken
 async function isUsernameTaken(username) {
     const employee = await getEmployeeByUsername(username);
-    ////
-    console.log("isUsernameTaken result:", employee);
-    ////
+    // console.log("isUsernameTaken result:", employee);
     return employee !== null;
 }
 
