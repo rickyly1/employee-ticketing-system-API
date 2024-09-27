@@ -8,7 +8,7 @@ const uuid = require("uuid");
             amount: number (required)
             description: string (required)
             employee: string (employee's username, required)
-            status: number ((default) 0 = pending, 1 = approved, 2 = denied)
+            status: string (must be "pending", "approved", or "denied")
         }
 */
 
@@ -18,8 +18,8 @@ async function getUserTickets(username) {
     return tickets;
 }
 
-async function getPendingTickets() {
-    const tickets = await TicketDao.getPendingTickets();
+async function getFilterTickets(status) {
+    const tickets = await TicketDao.getFilterTickets(status);
 
     return tickets;
 }
@@ -34,7 +34,7 @@ async function submitTicket(ticket, username) {
         amount: ticket.amount,
         description: ticket.description,
         employee: username,
-        status: 0 // Default status is pending
+        status: "pending" // Default status is pending
     };
 
     let data = await TicketDao.submitTicket(newTicket);
@@ -42,7 +42,7 @@ async function submitTicket(ticket, username) {
 }
 
 async function updateTicket(ticketId, status) {
-    if (status != 1 && status != 2) {
+    if (status != "approved" && status != "denied") {
         return null;
     }
 
@@ -54,5 +54,5 @@ module.exports = {
     submitTicket,
     updateTicket,
     getUserTickets,
-    getPendingTickets
+    getFilterTickets
 };

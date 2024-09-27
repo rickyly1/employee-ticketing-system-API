@@ -49,7 +49,7 @@ async function registerEmployee(Item) {
 
     try {
         const data = await documentClient.send(command);
-        return data;
+        return Item;
 
     } catch (err) {
         //logger.error(`Error registering employee: ${employee}`, err);

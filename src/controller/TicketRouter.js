@@ -10,7 +10,7 @@ const { authenticateToken, authenticateManagerToken } = require("./Middleware");
             amount: number (required)
             description: string (required)
             employee: string (employee's username, required)
-            status: number ((default) 0 = pending, 1 = approved, 2 = denied)
+            status: string (must be "pending", "approved", or "denied")
         }
 */
 
@@ -39,7 +39,7 @@ router.put("/update", authenticateManagerToken, async (req, res) => {
         if (result) {
             return res.status(201).json({ message: "Ticket udpated successfully", ticket: result });
         } else {
-            return res.status(400).json({ message: "Ticket update failed. Non-pending ticket." });
+            return res.status(400).json({ message: "Ticket update failed." });
         }
 
     } catch (error) {
@@ -65,14 +65,15 @@ router.get("/usertickets", authenticateToken, async (req, res) => {
     }
 })
 
-router.get("/pendingtickets", authenticateManagerToken, async (req, res) => {
+router.get("/filteredtickets", authenticateManagerToken, async (req, res) => {
     try {
-        const result = await TicketService.getPendingTickets();
+        const { status } = req.body;
+        const result = await TicketService.getFilterTickets(status);
 
         if (result) {
             return res.status(200).json(result);
         } else {
-            return res.status(400).json({ message: "There are currently no pending tickets." });
+            return res.status(400).json({ message: `There are currently no ${status} tickets.` });
         }
     } catch (error) {
         console.error("Error fetching tickets:", error);

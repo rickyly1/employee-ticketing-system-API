@@ -16,7 +16,7 @@ const TableName = "tickets";
             amount: number (required)
             description: string (required)
             employee: string (employee's username, required)
-            status: number ((default) 0 = pending, 1 = approved, 2 = denied)
+            status: string (must be "pending", "approved", or "denied")
         }
 */
 
@@ -43,9 +43,8 @@ async function getUserTickets(username) {
     }
 }
 
-// GET all pending tickets
-async function getPendingTickets() {
-    let status = 0;
+// GET filtered tickets
+async function getFilterTickets(status) {
     const command = new ScanCommand({
         TableName,
         FilterExpression:"#id = :id",
@@ -76,7 +75,7 @@ async function submitTicket(Item) {
 
     try {
         const data = await documentClient.send(command);
-        return data;
+        return Item;
 
     } catch (err) {
         return null;
@@ -93,13 +92,14 @@ async function updateTicket(ticketId, status) {
         ExpressionAttributeNames: { "#status": "status"},
         ExpressionAttributeValues: { 
             ":status": status,
-            ":pending": 0 
-        }
+            ":pending": "pending" 
+        },
+        ReturnValues: "ALL_NEW"
     })
 
     try {
         const data = await documentClient.send(command);
-        return data;
+        return data.Attributes;
 
     } catch (err) {
         return null;
@@ -110,5 +110,5 @@ module.exports = {
     submitTicket,
     updateTicket,
     getUserTickets,
-    getPendingTickets
+    getFilterTickets
 }

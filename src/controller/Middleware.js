@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const fs = require('fs');
-const secretKey = fs.readFileSync('./../secretkey.txt', 'utf8').trim();
+const path = require('path');
+const secretKey = fs.readFileSync(path.join(__dirname, '../../secretkey.txt'), 'utf8').trim();
 
 async function authenticateToken(req, res, next) {
     const authHeader = req.headers["authorization"];

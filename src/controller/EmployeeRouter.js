@@ -4,7 +4,8 @@ const EmployeeService = require("../service/EmployeeService");
 const { authenticateToken, authenticateManagerToken } = require("./Middleware");
 const jwt = require("jsonwebtoken");
 const fs = require('fs');
-const secretKey = fs.readFileSync('./../secretkey.txt', 'utf8').trim();
+const path = require('path');
+const secretKey = fs.readFileSync(path.join(__dirname, '../../secretkey.txt'), 'utf8').trim();
 
 /*
     Employee Object Model
@@ -50,9 +51,9 @@ router.post("/register", async (req, res) => {
         const employee = await EmployeeService.registerEmployee(req.body);
 
         if (employee) {
-            return res.status(201).json({ message: "New employee added", employee });
+            return res.status(201).json({ message: "New employee added", newEmployee: employee });
         } else {
-            return res.status(400).json({ message: "Employee was not added", receivedData: req.body });
+            return res.status(400).json({ message: "Employee was not added", attemptedEmployee: req.body });
         }
     } catch (error) {
         console.error("Error registering employee:", error); // Log the error for debugging
@@ -70,7 +71,7 @@ router.post("/login", async (req, res) => {
             const token = jwt.sign(
                         { username: employee.username, manager: employee.manager },
                         secretKey, // Use an environment variable for better security
-                        { expiresIn: "15m" }
+                        { expiresIn: "1d" }
                     );
 
             return res.status(200).json({ message: "Login successful", token });
@@ -91,7 +92,7 @@ router.get("/some-protected-route", authenticateToken, (req, res) => {
 
 router.get("/manager-protected", authenticateManagerToken, (req, res) => {
     // Only managers can process tickets
-    res.json({ message: "Ticket processed", user: req.user });
+    res.json({ message: "This is a protected route for managers", user: req.user });
 });
 
 module.exports = router;
