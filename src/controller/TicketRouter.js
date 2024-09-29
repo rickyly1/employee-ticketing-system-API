@@ -19,65 +19,45 @@ router.post("/submit", authenticateToken, async (req, res) => {
         const ticketData = req.body;
         const username = req.user.username;
         const result = await TicketService.submitTicket(ticketData, username);
+        return res.status(201).json({ message: "Ticket submitted successfully", ticket: result });
 
-        if (result) {
-            return res.status(201).json({ message: "Ticket submitted successfully", ticket: result });
-        } else {
-            return res.status(400).json({ message: "Ticket submission failed. Amount and description are required." });
-        }
     } catch (error) {
-        console.error("Error submitting ticket:", error);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(400).json({ message: error.message });
     }
 })
 
 router.put("/update", authenticateManagerToken, async (req, res) => {
     try {
         const { ticket_id, status } = req.body;
-        const result = await TicketService.updateTicket(ticket_id, status);
-
-        if (result) {
-            return res.status(201).json({ message: "Ticket udpated successfully", ticket: result });
-        } else {
-            return res.status(400).json({ message: "Ticket update failed." });
-        }
+        const managerUsername = req.user.username;
+        const result = await TicketService.updateTicket(managerUsername, ticket_id, status);
+        return res.status(200).json({ message: "Ticket udpated successfully", ticket: result });
 
     } catch (error) {
-        console.error("Error updating ticket status:", error);
-        return res.status(500).json({ message: "Internal server error"});
+        return res.status(400).json({ message: error.message});
     }
 })
 
 router.get("/usertickets", authenticateToken, async (req, res) => {
     try {
         const username = req.user.username;
-
         const result = await TicketService.getUserTickets(username);
 
-        if (result) {
-            return res.status(200).json(result);
-        } else {
-            return res.status(400).json({ message: "This user has no prior tickets." });
-        }
+        return res.status(200).json(result);
+
     } catch (error) {
-        console.error("Error fetching tickets:", error);
-        return res.status(500).json({ message: "Internal server error"});
+        return res.status(400).json({ message: error.message });
     }
 })
 
 router.get("/filteredtickets", authenticateManagerToken, async (req, res) => {
     try {
-        const { status } = req.body;
+        const status = req.query.status;
         const result = await TicketService.getFilterTickets(status);
+        return res.status(200).json(result);
 
-        if (result) {
-            return res.status(200).json(result);
-        } else {
-            return res.status(400).json({ message: `There are currently no ${status} tickets.` });
-        }
     } catch (error) {
-        console.error("Error fetching tickets:", error);
-        return res.status(500).json({ message: "Internal server error"});
+        return res.status(400).json({ message: error.message});
     }
 })
 

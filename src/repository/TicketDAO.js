@@ -4,6 +4,7 @@ const {
     PutCommand,
     UpdateCommand,
     ScanCommand,
+    GetCommand
 } = require("@aws-sdk/lib-dynamodb");
 const client = new DynamoDBClient({region: "us-west-1"});
 const documentClient = DynamoDBDocumentClient.from(client);
@@ -20,6 +21,27 @@ const TableName = "tickets";
         }
 */
 
+// GET ticket by ticket_id
+async function getTicketById(ticket_id) {
+    const command = new GetCommand({
+        TableName,
+        Key: { "ticket_id": ticket_id}
+    });
+
+    try {
+        const data = await documentClient.send(command);
+
+        if (!data.Item || data.Item.length === 0) {
+            return null;  // Explicitly return null if no employee is found
+        }
+        return data.Item;
+
+    } catch (err) {
+        console.error(`Error fetching ticket by id: ${ticket_id}`, err);
+        return null;
+    }
+}
+
 // GET all of a user's tickets
 async function getUserTickets(username) {
     const command = new ScanCommand({
@@ -32,9 +54,6 @@ async function getUserTickets(username) {
     try {
         const data = await documentClient.send(command);
 
-        if (data.Items.length === 0) {
-            return null;  // Explicitly return null if no employee is found
-        }
         return data.Items;
 
     } catch (err) {
@@ -54,14 +73,9 @@ async function getFilterTickets(status) {
 
     try {
         const data = await documentClient.send(command);
-
-        if (data.Items.length === 0) {
-            return null;  // Explicitly return null if no employee is found
-        }
         return data.Items;
 
     } catch (err) {
-        console.error(`Error fetching pending tickets: `, err);
         return null;
     }
 }
@@ -74,7 +88,7 @@ async function submitTicket(Item) {
     });
 
     try {
-        const data = await documentClient.send(command);
+        await documentClient.send(command);
         return Item;
 
     } catch (err) {
@@ -107,6 +121,7 @@ async function updateTicket(ticketId, status) {
 }
 
 module.exports = {
+    getTicketById,
     submitTicket,
     updateTicket,
     getUserTickets,
