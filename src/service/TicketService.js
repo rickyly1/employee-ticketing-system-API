@@ -40,6 +40,10 @@ async function submitTicket(ticket, username) {
         throw new Error("Amount and description are required fields.");
     }
 
+    if (ticket.amount <= 0) {
+        throw new Error("Invalid value provided for amount.");
+    }
+
     let newTicket = {
         ticket_id: uuid.v4(),
         amount: ticket.amount,
