@@ -32,6 +32,18 @@ An API built using JavaScript, NodeJS, AWS DynamoDB, ExpressJS, Jest, and Postma
 - Managers can filter for tickets based on status; this will show all tickets of status X from all users
 - Employees can view all of their previous ticket submissions, regardless of status
 
+## Employee/Ticket Object Model
+### Employee
+- **username** - unique alphaneumeric string
+- **password** - alphaneumeric string
+- **manager** - boolean (true/false), set to false by default
+### Ticket
+- **ticket_id** - unique alphaneumeric string, automatically generated
+- **amount** - numerical value (required)
+- **description** - string (required)
+- **employee** - string, employee's username (required)
+- **status** - string, "pending", "approved", or "denied"; set to pending by default
+
 ## Improvements Made After 9/27 Presentation
 Following my presentation of this project, there were some notable flaws I noticed that I felt the need to correct, which can be seen in the **postpresentation-improvements** branch. Below is a general list of changes.
 - Improved input validation for user registration
