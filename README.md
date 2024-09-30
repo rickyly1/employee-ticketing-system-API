@@ -11,7 +11,7 @@ An API built using JavaScript, NodeJS, AWS DynamoDB, ExpressJS, Jest, and Postma
    ```shell
    # can be done by running this line in the terminal if the AWS SDK is installed
    aws configure
-5. Run the program, by default with operate on http://localhost:3000
+5. Run the program, by default will operate on http://localhost:3000
    ```shell
    node your-local-path/app.js
 
