@@ -35,7 +35,6 @@ async function getEmployeeByUsername(username) {
         return data.Items[0];
 
     } catch (err) {
-        console.error(`Error fetching employee by username: ${username}`, err);
         return null;
     }
 }
@@ -52,7 +51,6 @@ async function registerEmployee(Item) {
         return Item;
 
     } catch (err) {
-        //logger.error(`Error registering employee: ${employee}`, err);
         return null;
     }
 }
@@ -69,7 +67,7 @@ async function loginEmployee(username, password) {
 // Check if username is taken
 async function isUsernameTaken(username) {
     const employee = await getEmployeeByUsername(username);
-    // console.log("isUsernameTaken result:", employee);
+
     return employee !== null;
 }
 

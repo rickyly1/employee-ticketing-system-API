@@ -42,22 +42,11 @@ router.get("/username", async (req, res) => {
 
 router.post("/register", async (req, res) => {
     try {
-        const { username, password } = req.body;
-
-        if (!username || !password) {
-            return res.status(400).json({ message: "Username and password are required" });
-        }
-
         const employee = await EmployeeService.registerEmployee(req.body);
+        return res.status(201).json({ message: "New employee added", newEmployee: employee });
 
-        if (employee) {
-            return res.status(201).json({ message: "New employee added", newEmployee: employee });
-        } else {
-            return res.status(400).json({ message: "Employee was not added", attemptedEmployee: req.body });
-        }
     } catch (error) {
-        console.error("Error registering employee:", error); // Log the error for debugging
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(400).json({ message: error.message });
     }
 })
 
