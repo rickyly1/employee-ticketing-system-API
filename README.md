@@ -37,4 +37,5 @@ Following my presentation of this project, there were some notable flaws I notic
 - Improved input validation for user registration
 - Improved input validation for ticket status updating
 - Improved clarity on error messages for ticket status updating
+- Separated input validation logic from some commands in the ticketing router to further isolate business logic in the service layer
 - Updated GET command to receive input parameters from the URL instead of the request body
